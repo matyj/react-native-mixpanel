@@ -273,13 +273,28 @@ RCT_EXPORT_METHOD(reset:(NSString *)apiToken
     resolve(nil);
 }
 
+// create tweak
+- (void) createTweakWithResolve:(RCTPromiseResolveBlock)resolve
+                         reject:(RCTPromiseRejectBlock)reject {
+    resolve(nil);
+}
+
+- (void) getTweak:(NSString *)name
+          resolve:(RCTPromiseResolveBlock)resolve
+           reject:(RCTPromiseRejectBlock)reject {
+    MPTweak *tweak = [[MPTweakStore sharedInstance] tweakWithName:name];
+    resolve(tweak.currentValue ?: tweak.defaultValue);
+}
+
+
 // create boolean tweak
 RCT_EXPORT_METHOD(createBooleanTweak:(NSString *)name
                   defaultValue:(BOOL)defaultValue
                   apiToken:(NSString *)apiToken
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    resolve(nil);
+    [self createTweakWithResolve:resolve
+                          reject:reject];
 }
 
 // get boolean tweak
@@ -287,8 +302,29 @@ RCT_EXPORT_METHOD(getBooleanTweak:(NSString *)name
                   apiToken:(NSString *)apiToken
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    MPTweak *tweak = [[MPTweakStore sharedInstance] tweakWithName:name];
-    resolve(tweak.currentValue ?: tweak.defaultValue);
+    [self getTweak:name
+           resolve:resolve
+            reject:reject];
+}
+
+// create string tweak
+RCT_EXPORT_METHOD(createStringTweak:(NSString *)name
+                  defaultValue:(NSString *)defaultValue
+                  apiToken:(NSString *)apiToken
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [self createTweakWithResolve:resolve
+                          reject:reject];
+}
+
+// get string tweak
+RCT_EXPORT_METHOD(getStringTweak:(NSString *)name
+                  apiToken:(NSString *)apiToken
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [self getTweak:name
+           resolve:resolve
+            reject:reject];
 }
 
 @end

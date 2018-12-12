@@ -30,6 +30,8 @@ public class RNMixpanelModule extends ReactContextBaseJavaModule implements Life
 
     private Map<String, Tweak<Boolean>> booleanTweaks = new HashMap();
 
+    private Map<String, Tweak<String>> stringTweaks = new HashMap();
+
     public RNMixpanelModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
@@ -420,6 +422,31 @@ public class RNMixpanelModule extends ReactContextBaseJavaModule implements Life
         }
         synchronized(instance) {
             promise.resolve(booleanTweaks.get(name).get());
+        }
+    }
+
+    @ReactMethod
+    public void createStringTweak(final String name, String defaultValue, final String apiToken, Promise promise) {
+        final MixpanelAPI instance = getInstance(apiToken);
+        if (instance == null) {
+            promise.reject(new Throwable("no mixpanel instance available."));
+            return;
+        }
+        synchronized(instance) {
+            stringTweaks.put(name, MixpanelAPI.stringTweak(name, defaultValue));
+        }
+        promise.resolve(null);
+    }
+
+    @ReactMethod
+    public void getStringTweak(final String name, final String apiToken, Promise promise) {
+        final MixpanelAPI instance = getInstance(apiToken);
+        if (instance == null) {
+            promise.reject(new Throwable("no mixpanel instance available."));
+            return;
+        }
+        synchronized(instance) {
+            promise.resolve(stringTweaks.get(name).get());
         }
     }
 }
